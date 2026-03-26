@@ -1,0 +1,100 @@
+<%- include('partials/header') %>
+
+<section class="about-hero">
+  <div class="container">
+    <h1>About NestDubai</h1>
+    <p>We're on a mission to make Dubai affordable and accessible for every international student — one room at a time.</p>
+  </div>
+</section>
+
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <h2 style="margin-bottom:20px;">We Understand Student Life</h2>
+        <p style="line-height:1.8; margin-bottom:16px;">Moving to a new country is one of the biggest decisions of your life. Finding reliable, affordable accommodation in Dubai — one of the world's most expensive cities — shouldn't be the hardest part of that journey.</p>
+        <p style="line-height:1.8; margin-bottom:16px;">NestDubai was founded by people who lived through the struggle of arriving in Dubai as an international student with nowhere safe, affordable, and welcoming to live. We built the platform we wish had existed.</p>
+        <p style="line-height:1.8;">We partner with property owners across Dubai's most student-friendly neighbourhoods to offer vetted, quality-checked rooms at prices that actually work for student budgets.</p>
+        <div style="display:flex; gap:24px; margin-top:32px; flex-wrap:wrap;">
+          <div>
+            <div style="font-size:2rem; font-weight:700; font-family:var(--font-display); color:var(--teal);">500+</div>
+            <div style="font-size:0.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;">Students Housed</div>
+          </div>
+          <div>
+            <div style="font-size:2rem; font-weight:700; font-family:var(--font-display); color:var(--teal);">4</div>
+            <div style="font-size:0.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;">Properties</div>
+          </div>
+          <div>
+            <div style="font-size:2rem; font-weight:700; font-family:var(--font-display); color:var(--teal);">60+</div>
+            <div style="font-size:0.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;">Nationalities</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-img">
+        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=900&q=80" alt="Modern student accommodation interior" loading="lazy" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Values -->
+<section class="section" style="background:var(--sand);">
+  <div class="container">
+    <div class="text-center mb-48">
+      <h2>Our Values</h2>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
+      <% const values = [
+        { icon:'🔒', title:'Safety First', desc:'Every property is security-vetted, CCTV-equipped, and managed by trained staff.' },
+        { icon:'💸', title:'Student Budget', desc:'Real prices for real students. No premium pricing, no unnecessary extras.' },
+        { icon:'🌍', title:'Inclusive Community', desc:'We welcome students from every country, background, and culture.' },
+        { icon:'⚡', title:'Instant Booking', desc:'No paperwork queues. Book online, pay online, move in on your date.' }
+      ] %>
+      <% values.forEach(v => { %>
+        <div style="background:var(--white); border-radius:var(--radius-lg); padding:24px; text-align:center; border:1px solid var(--border);">
+          <div style="font-size:2rem; margin-bottom:12px;" aria-hidden="true"><%= v.icon %></div>
+          <h4 style="margin-bottom:8px;"><%= v.title %></h4>
+          <p style="font-size:0.82rem;"><%= v.desc %></p>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <div class="text-center mb-48">
+      <h2>The Team</h2>
+      <p style="max-width:480px; margin:12px auto 0;">A small, dedicated team passionate about making student life in Dubai better.</p>
+    </div>
+    <div class="team-grid">
+      <% const team = [
+        { name:'Ameya Chandorkar', role:'CEO & Founder', initial:'A' },
+        { name:'Reyyan Khan', role:'Head of Operations', initial:'R' }
+      ] %>
+      <% team.forEach(t => { %>
+        <div class="team-card">
+          <div class="team-avatar" aria-hidden="true"><%= t.initial %></div>
+          <div class="team-name"><%= t.name %></div>
+          <div class="team-role"><%= t.role %></div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- Contact CTA -->
+<section style="background:var(--charcoal); padding:80px 0;" aria-labelledby="contact-heading">
+  <div class="container text-center">
+    <h2 id="contact-heading" style="color:#fff; margin-bottom:16px;">Get in Touch</h2>
+    <p style="color:rgba(255,255,255,0.65); margin-bottom:32px; max-width:400px; margin-left:auto; margin-right:auto;">Have questions? We're here to help every step of the way.</p>
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-bottom:24px;">
+      <a href="mailto:ameyachandorkar22@gmail.com" class="btn btn-gold">📧 ameyachandorkar22@gmail.com</a>
+      <a href="tel:+971521986224" class="btn btn-lg" style="background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);">📞 +971-521986224</a>
+    </div>
+    <p style="color:rgba(255,255,255,0.4); font-size:0.82rem;">Dubai Knowledge Village, TECOM, Dubai, UAE</p>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

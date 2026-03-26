@@ -1,0 +1,111 @@
+<%- include('partials/header') %>
+
+<section class="page-header" aria-labelledby="page-title">
+  <div class="container">
+    <h1 id="page-title">Find Your Perfect Room</h1>
+    <p>Browse all 4 properties across Dubai's most student-friendly neighbourhoods. Filter by area and room type.</p>
+  </div>
+</section>
+
+<section class="section-sm" style="background:var(--sand);">
+  <div class="container">
+    <!-- Filter Bar -->
+    <nav class="filter-bar" aria-label="Filter properties">
+      <span class="filter-label">Room Type:</span>
+      <button class="filter-pill <%= filter === 'all' ? 'active' : '' %>" data-filter="all" data-group="type">All Types</button>
+      <button class="filter-pill <%= filter === 'studio' ? 'active' : '' %>" data-filter="studio" data-group="type">🏠 Studio</button>
+      <button class="filter-pill <%= filter === 'partition' ? 'active' : '' %>" data-filter="partition" data-group="type">🚪 Partition</button>
+      <button class="filter-pill <%= filter === 'bedspace' ? 'active' : '' %>" data-filter="bedspace" data-group="type">🛏 Bedspace</button>
+      <div class="filter-sep" aria-hidden="true"></div>
+      <span class="filter-label">Area:</span>
+      <button class="filter-pill <%= area === 'all' ? 'active' : '' %>" data-filter="all" data-group="area">All Areas</button>
+      <button class="filter-pill <%= area === 'Barsha Heights' ? 'active' : '' %>" data-filter="Barsha Heights" data-group="area">Barsha Heights</button>
+      <button class="filter-pill <%= area === 'TECOM' ? 'active' : '' %>" data-filter="TECOM" data-group="area">TECOM</button>
+      <button class="filter-pill <%= area === 'Discovery Gardens' ? 'active' : '' %>" data-filter="Discovery Gardens" data-group="area">Discovery Gardens</button>
+      <button class="filter-pill <%= area === 'Al Barsha' ? 'active' : '' %>" data-filter="Al Barsha" data-group="area">Al Barsha</button>
+    </nav>
+
+    <!-- Live indicator -->
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:20px;" data-live-vacancy>
+      <span class="live-dot" aria-hidden="true"></span>
+      <span class="text-sm text-muted fw-600">Live availability — updates every 30 seconds</span>
+    </div>
+
+    <!-- Property List -->
+    <div class="props-list">
+      <% properties.forEach(prop => {
+        const types = prop.roomTypes.map(r => r.type).join(',');
+      %>
+        <article class="prop-list-card" data-area="<%= prop.area %>" data-types="<%= types %>">
+          <div class="prop-list-img">
+            <img src="<%= prop.image_hero %>" alt="<%= prop.name %>" loading="lazy" />
+          </div>
+          <div class="prop-list-body">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+              <div>
+                <h2 class="prop-list-name"><%= prop.name %></h2>
+                <p class="prop-list-area">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <%= prop.address %>
+                </p>
+              </div>
+              <% const avail = prop.totalAvailable; %>
+              <% if (avail === 0) { %>
+                <span class="badge badge-danger">Fully Booked</span>
+              <% } else if (avail <= 3) { %>
+                <span class="badge badge-warning">⚡ Only <%= avail %> left</span>
+              <% } else { %>
+                <span class="badge badge-success"><span class="live-dot" style="width:6px;height:6px;margin-right:3px;" aria-hidden="true"></span><%= avail %> spaces available</span>
+              <% } %>
+            </div>
+
+            <p class="prop-list-desc"><%= prop.description %></p>
+
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px;">
+              <% prop.amenities.slice(0, 5).forEach(a => { %>
+                <span class="tag"><%= a %></span>
+              <% }) %>
+              <% if (prop.amenities.length > 5) { %>
+                <span class="tag">+<%= prop.amenities.length - 5 %> more</span>
+              <% } %>
+            </div>
+
+            <div class="prop-list-rooms">
+              <% prop.roomTypes.forEach(rt => { %>
+                <div class="room-pill">
+                  <div class="room-pill-type"><%= rt.type === 'studio' ? '🏠' : rt.type === 'partition' ? '🚪' : '🛏' %> <%= rt.label %></div>
+                  <div class="room-pill-price">AED <%= rt.price_monthly.toLocaleString() %>/mo</div>
+                  <div style="font-size:0.72rem; color:<%= rt.available > 0 ? 'var(--success)' : 'var(--danger)' %>; margin-top:2px;">
+                    <span data-vacancy-id="<%= rt.id %>"><%= rt.available %> available</span>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+
+            <div class="prop-list-footer">
+              <div>
+                <div style="font-size:0.8rem; color:var(--muted);">From</div>
+                <div style="font-size:1.3rem; font-weight:700; color:var(--teal);">AED <%= prop.lowestPrice.toLocaleString() %><span style="font-size:0.78rem;font-weight:400;color:var(--muted);"> /month</span></div>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <a href="/book?property=<%= prop.id %>" class="btn btn-outline btn-sm">Book Now</a>
+                <a href="/properties/<%= prop.id %>" class="btn btn-primary btn-sm">View Details →</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:var(--teal); padding:56px 0;" aria-labelledby="cta2-heading">
+  <div class="container text-center">
+    <h2 id="cta2-heading" style="color:#fff;">Not Sure Which Room Suits You?</h2>
+    <p style="color:rgba(255,255,255,0.8); margin:12px auto 24px; max-width:460px;">Register free and our team will help you find the perfect match based on your budget and preferences.</p>
+    <a href="/register" class="btn btn-gold btn-lg">Get Started Free</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

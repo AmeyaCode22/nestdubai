@@ -1,0 +1,188 @@
+<%- include('partials/header') %>
+
+<div style="background:var(--sand); min-height:100vh; padding-top:68px;">
+  <div class="container admin-layout">
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+      <div>
+        <h1 style="font-size:1.8rem; margin-bottom:4px;">⚙️ Admin Dashboard</h1>
+        <p class="text-muted text-sm">NestDubai Management Panel — Live Overview</p>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span class="text-sm text-muted">Live data</span>
+        <a href="/logout" class="btn btn-outline btn-sm">Sign Out</a>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <section aria-label="Overview statistics">
+      <div class="admin-stats">
+        <div class="admin-stat">
+          <div>
+            <div class="admin-stat-num"><%= stats.total %></div>
+            <div class="admin-stat-label">Total Bookings</div>
+          </div>
+          <div class="admin-stat-icon" style="background:rgba(26,123,116,0.1);" aria-hidden="true">📋</div>
+        </div>
+        <div class="admin-stat">
+          <div>
+            <div class="admin-stat-num" style="color:var(--success);"><%= stats.active %></div>
+            <div class="admin-stat-label">Active Tenants</div>
+          </div>
+          <div class="admin-stat-icon" style="background:rgba(26,123,74,0.1);" aria-hidden="true">🏠</div>
+        </div>
+        <div class="admin-stat">
+          <div>
+            <div class="admin-stat-num" style="color:var(--warning);"><%= stats.pending %></div>
+            <div class="admin-stat-label">Pending</div>
+          </div>
+          <div class="admin-stat-icon" style="background:rgba(201,146,42,0.1);" aria-hidden="true">⏳</div>
+        </div>
+        <div class="admin-stat">
+          <div>
+            <div class="admin-stat-num" style="color:var(--teal);">AED <%= Math.round(stats.revenue).toLocaleString() %></div>
+            <div class="admin-stat-label">Revenue Collected</div>
+          </div>
+          <div class="admin-stat-icon" style="background:rgba(26,123,116,0.1);" aria-hidden="true">💰</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Properties Overview -->
+    <section aria-labelledby="props-admin-heading">
+      <h2 id="props-admin-heading" style="font-size:1.1rem; margin-bottom:12px;">Properties Occupancy</h2>
+      <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:32px;" data-live-vacancy>
+        <% properties.forEach(prop => { %>
+          <div style="background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+              <div>
+                <div style="font-weight:700; font-size:0.9rem;"><%= prop.name %></div>
+                <div style="font-size:0.75rem; color:var(--muted);"><%= prop.area %></div>
+              </div>
+              <span class="badge <%= prop.totalAvailable > 0 ? 'badge-success' : 'badge-danger' %>">
+                <%= prop.totalAvailable %>/<%= prop.totalCapacity %> free
+              </span>
+            </div>
+            <% prop.roomTypes.forEach(rt => { %>
+              <div style="margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:4px;">
+                  <span style="color:var(--slate)"><%= rt.label %></span>
+                  <span class="text-muted"><span data-vacancy-id="<%= rt.id %>"><%= rt.available %></span>/<%= rt.total_units %></span>
+                </div>
+                <div class="vacancy-bar" data-pct="<%= rt.total_units > 0 ? Math.round((rt.available/rt.total_units)*100) : 0 %>" data-bar-id="<%= rt.id %>">
+                  <div class="vacancy-fill"></div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+
+    <!-- All Bookings -->
+    <section class="admin-table-wrap" aria-labelledby="bookings-heading">
+      <div class="admin-table-header">
+        <h2 id="bookings-heading" style="font-size:1.1rem;">All Bookings</h2>
+        <span class="badge badge-teal"><%= bookings.length %> total</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table role="table" aria-label="All student bookings">
+          <thead>
+            <tr>
+              <th scope="col">Ref</th>
+              <th scope="col">Student</th>
+              <th scope="col">Property</th>
+              <th scope="col">Room</th>
+              <th scope="col">Move-in</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Status</th>
+              <th scope="col">Payment</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (bookings.length === 0) { %>
+              <tr><td colspan="9" style="text-align:center; color:var(--muted); padding:32px;">No bookings yet.</td></tr>
+            <% } %>
+            <% bookings.forEach(b => {
+              const statusColors = { active:'badge-success', pending:'badge-warning', cancelled:'badge-danger', completed:'badge-sand' };
+              const payColors = { paid:'badge-success', unpaid:'badge-danger' };
+            %>
+              <tr>
+                <td><code style="font-size:0.78rem;">#NEST-<%= String(b.id).padStart(4,'0') %></code></td>
+                <td>
+                  <div style="font-weight:600; font-size:0.85rem;"><%= b.student_name %></div>
+                  <div style="font-size:0.75rem; color:var(--muted);"><%= b.student_email %></div>
+                  <% if (b.nationality) { %><div style="font-size:0.72rem; color:var(--muted);">🌍 <%= b.nationality %></div><% } %>
+                </td>
+                <td><div style="font-size:0.85rem;"><%= b.property_name %></div><div style="font-size:0.75rem; color:var(--muted);"><%= b.area %></div></td>
+                <td style="font-size:0.85rem;"><%= b.room_label %></td>
+                <td style="font-size:0.85rem;"><%= new Date(b.move_in_date).toLocaleDateString('en-AE',{day:'2-digit',month:'short',year:'numeric'}) %></td>
+                <td style="font-weight:600; color:var(--teal); white-space:nowrap;">AED <%= (b.total_amount||0).toLocaleString() %></td>
+                <td><span class="badge <%= statusColors[b.status] || 'badge-sand' %>"><%= b.status %></span></td>
+                <td><span class="badge <%= payColors[b.payment_status] || 'badge-warning' %>"><%= b.payment_status %></span></td>
+                <td>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                    <% if (b.status === 'pending') { %>
+                      <form method="POST" action="/admin/booking/status" style="display:inline;">
+                        <input type="hidden" name="id" value="<%= b.id %>" />
+                        <input type="hidden" name="status" value="active" />
+                        <button type="submit" class="btn btn-sm btn-primary" style="padding:4px 10px; font-size:0.75rem;">Activate</button>
+                      </form>
+                    <% } %>
+                    <% if (b.status !== 'cancelled') { %>
+                      <form method="POST" action="/admin/booking/<%= b.id %>/cancel" style="display:inline;" onsubmit="return confirm('Cancel booking #NEST-<%= String(b.id).padStart(4,'0') %>?')">
+                        <button type="submit" class="btn btn-sm btn-danger" style="padding:4px 10px; font-size:0.75rem;">Cancel</button>
+                      </form>
+                    <% } %>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- All Students -->
+    <section class="admin-table-wrap" aria-labelledby="students-heading">
+      <div class="admin-table-header">
+        <h2 id="students-heading" style="font-size:1.1rem;">Registered Students</h2>
+        <span class="badge badge-teal"><%= users.length %> students</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table role="table" aria-label="All registered students">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Phone</th>
+              <th scope="col">Nationality</th>
+              <th scope="col">University</th>
+              <th scope="col">Joined</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (users.length === 0) { %>
+              <tr><td colspan="6" style="text-align:center; color:var(--muted); padding:32px;">No students yet.</td></tr>
+            <% } %>
+            <% users.forEach(u => { %>
+              <tr>
+                <td style="font-weight:600; font-size:0.875rem;"><%= u.name %></td>
+                <td style="font-size:0.82rem;"><%= u.email %></td>
+                <td style="font-size:0.82rem;"><%= u.phone || '—' %></td>
+                <td style="font-size:0.82rem;"><%= u.nationality || '—' %></td>
+                <td style="font-size:0.82rem;"><%= u.university || '—' %></td>
+                <td style="font-size:0.82rem; color:var(--muted);"><%= new Date(u.created_at).toLocaleDateString('en-AE', {day:'2-digit',month:'short',year:'numeric'}) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<%- include('partials/footer') %>

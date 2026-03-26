@@ -1,0 +1,217 @@
+<%- include('partials/header') %>
+
+<!-- Hero Image -->
+<div class="property-hero" role="img" aria-label="<%= property.name %> building exterior">
+  <img src="<%= property.image_hero %>" alt="<%= property.name %>" class="property-hero-main" />
+  <div class="property-hero-overlay" aria-hidden="true"></div>
+  <div class="property-hero-content container">
+    <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+      <span class="badge badge-teal" style="background:rgba(255,255,255,0.2);color:#fff;"><%= property.area %></span>
+      <% const allAvail = roomTypes.reduce((s,r)=>s+r.available,0); %>
+      <% if (allAvail === 0) { %>
+        <span class="badge badge-danger">Fully Booked</span>
+      <% } else { %>
+        <span class="badge badge-success" style="background:rgba(255,255,255,0.2);color:#fff;"><span class="live-dot" aria-hidden="true" style="margin-right:4px;"></span><%= allAvail %> spaces available</span>
+      <% } %>
+    </div>
+    <h1><%= property.name %></h1>
+    <p class="property-hero-location">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <%= property.address %>
+    </p>
+  </div>
+</div>
+
+<!-- Gallery -->
+<div style="background:var(--charcoal); padding:4px 0;">
+  <div class="container" style="padding:0;">
+    <div class="property-gallery">
+      <img src="<%= property.image_2 %>" alt="<%= property.name %> interior" loading="lazy" class="gallery-thumb" style="cursor:pointer;" />
+      <img src="<%= property.image_3 %>" alt="<%= property.name %> amenities" loading="lazy" class="gallery-thumb" style="cursor:pointer;" />
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="property-layout">
+
+    <!-- LEFT COLUMN -->
+    <div>
+      <!-- Tagline -->
+      <div style="background:var(--sand); border-left:4px solid var(--teal); padding:16px 20px; border-radius:0 var(--radius-md) var(--radius-md) 0; margin-bottom:32px; margin-top:32px;">
+        <p style="font-style:italic; font-size:1.05rem; color:var(--teal-dark); font-weight:500;">"<%= property.tagline %>"</p>
+      </div>
+
+      <!-- About -->
+      <section class="property-section" aria-labelledby="about-heading">
+        <h3 id="about-heading">About This Property</h3>
+        <p style="line-height:1.8;"><%= property.description %></p>
+      </section>
+
+      <!-- Room Types -->
+      <section class="property-section" aria-labelledby="rooms-heading" data-live-vacancy>
+        <h3 id="rooms-heading">Available Room Types</h3>
+        <div class="room-cards">
+          <% roomTypes.forEach(rt => { %>
+            <article class="room-detail-card">
+              <div class="room-detail-img">
+                <img src="<%= rt.image_url %>" alt="<%= rt.label %> at <%= property.name %>" loading="lazy" />
+              </div>
+              <div class="room-detail-body">
+                <div class="room-detail-header">
+                  <div>
+                    <div class="room-detail-name"><%= rt.type === 'studio' ? '🏠' : rt.type === 'partition' ? '🚪' : '🛏' %> <%= rt.label %></div>
+                    <div style="font-size:0.8rem; color:var(--muted); margin-top:3px;">
+                      <% if (rt.type === 'bedspace') { %>
+                        7 students per flat (4 hall + 3 room)
+                      <% } else if (rt.type === 'partition') { %>
+                        8 private rooms per flat
+                      <% } else { %>
+                        Self-contained unit
+                      <% } %>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="room-detail-price">AED <%= rt.price_monthly.toLocaleString() %><span>/mo</span></div>
+                    <% if (rt.available === 0) { %>
+                      <span class="badge badge-danger" style="margin-top:4px;float:right;" data-vacancy-id="<%= rt.id %>">Fully Booked</span>
+                    <% } else if (rt.available <= 2) { %>
+                      <span class="badge badge-warning" style="margin-top:4px;float:right;" data-vacancy-id="<%= rt.id %>">⚡ <%= rt.available %> left</span>
+                    <% } else { %>
+                      <span class="badge badge-success" style="margin-top:4px;float:right;" data-vacancy-id="<%= rt.id %>"><%= rt.available %> available</span>
+                    <% } %>
+                  </div>
+                </div>
+
+                <p style="font-size:0.83rem; color:var(--slate); line-height:1.6; margin-bottom:12px;"><%= rt.description %></p>
+
+                <div class="room-features">
+                  <% rt.features.forEach(f => { %>
+                    <span class="room-feature-tag">✓ <%= f %></span>
+                  <% }) %>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                  <div style="font-size:0.78rem; color:var(--muted);">
+                    <div class="vacancy-bar" style="width:140px;" data-pct="<%= rt.total_units > 0 ? Math.round((rt.available/rt.total_units)*100) : 0 %>" data-bar-id="<%= rt.id %>">
+                      <div class="vacancy-fill"></div>
+                    </div>
+                    <span style="margin-top:4px; display:block;"><%= rt.available %>/<%= rt.total_units %> available</span>
+                  </div>
+                  <% if (rt.available > 0) { %>
+                    <a href="/book?property=<%= property.id %>&room=<%= rt.id %>" class="btn btn-primary btn-sm">Book This Room</a>
+                  <% } else { %>
+                    <button class="btn btn-sm" disabled>No Vacancies</button>
+                  <% } %>
+                </div>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+
+      <!-- Amenities -->
+      <section class="property-section" aria-labelledby="amenities-heading">
+        <h3 id="amenities-heading">Amenities & Facilities</h3>
+        <div class="amenities-grid">
+          <% property.amenities.forEach(a => { %>
+            <span class="tag">✓ <%= a %></span>
+          <% }) %>
+        </div>
+      </section>
+
+      <!-- Nearby -->
+      <section class="property-section" aria-labelledby="nearby-heading">
+        <h3 id="nearby-heading">Nearby</h3>
+        <div class="nearby-list">
+          <% property.nearby.forEach((n, i) => {
+            const icons = ['🚇','🏢','🛍','🏪','🏥'];
+          %>
+            <div class="nearby-item">
+              <div class="nearby-icon" aria-hidden="true"><%= icons[i] || '📍' %></div>
+              <span><%= n %></span>
+            </div>
+          <% }) %>
+        </div>
+      </section>
+
+      <!-- Map -->
+      <section class="property-section" aria-labelledby="map-heading">
+        <h3 id="map-heading">Location Map</h3>
+        <div class="google-map">
+          <iframe
+            src="<%= property.google_maps_embed %>"
+            loading="lazy"
+            allowfullscreen
+            title="Map showing location of <%= property.name %>"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </section>
+    </div>
+
+    <!-- RIGHT COLUMN — STICKY BOOKING CARD -->
+    <aside>
+      <div class="property-sticky-card" aria-label="Quick booking">
+        <h3 style="font-size:1.1rem; margin-bottom:4px;">Book This Property</h3>
+        <p class="text-sm text-muted" style="margin-bottom:20px;">Select a room type to see pricing</p>
+
+        <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); font-weight:600; margin-bottom:10px;">Choose Your Room</div>
+        <% roomTypes.forEach(rt => { %>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border:1.5px solid var(--border); border-radius:var(--radius-md); margin-bottom:10px; background:var(--cream);">
+            <div>
+              <div style="font-weight:600; font-size:0.875rem;"><%= rt.type === 'studio' ? '🏠' : rt.type === 'partition' ? '🚪' : '🛏' %> <%= rt.label %></div>
+              <div style="font-size:0.75rem; color:<%= rt.available > 0 ? 'var(--success)' : 'var(--danger)' %>; margin-top:2px;" data-vacancy-id="<%= rt.id %>">
+                <%= rt.available > 0 ? rt.available + ' available' : 'Fully Booked' %>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-weight:700; color:var(--teal);">AED <%= rt.price_monthly.toLocaleString() %></div>
+              <div style="font-size:0.72rem; color:var(--muted);">/month</div>
+            </div>
+          </div>
+        <% }) %>
+
+        <% if (allAvail > 0) { %>
+          <% if (user) { %>
+            <a href="/book?property=<%= property.id %>" class="btn btn-primary btn-block" style="margin-top:8px;">Book Now</a>
+          <% } else { %>
+            <a href="/register" class="btn btn-primary btn-block" style="margin-top:8px;">Register to Book</a>
+            <a href="/login" class="btn btn-ghost btn-block btn-sm" style="margin-top:8px;">Already have an account?</a>
+          <% } %>
+        <% } else { %>
+          <button class="btn btn-block" disabled style="margin-top:8px;">No Vacancies Available</button>
+        <% } %>
+
+        <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
+          <div style="display:flex; align-items:center; gap:8px; font-size:0.8rem; color:var(--muted); margin-bottom:8px;">
+            <span>🔒</span> Secure online payment via Stripe
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:0.8rem; color:var(--muted); margin-bottom:8px;">
+            <span>📅</span> Monthly billing — cancel with notice
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:0.8rem; color:var(--muted);">
+            <span>📞</span> 24/7 support: +971 4 300 0000
+          </div>
+        </div>
+      </div>
+
+      <!-- Other Properties -->
+      <div style="margin-top:24px;">
+        <div style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); margin-bottom:12px;">Other Properties</div>
+        <% allProperties.filter(p => p.id !== property.id).forEach(p => { %>
+          <a href="/properties/<%= p.id %>" style="display:flex; align-items:center; gap:12px; padding:10px; border-radius:var(--radius-md); transition:background var(--transition);" onmouseover="this.style.background='var(--sand)'" onmouseout="this.style.background='transparent'">
+            <img src="<%= p.image_hero %>" alt="<%= p.name %>" style="width:52px;height:40px;object-fit:cover;border-radius:var(--radius-sm);flex-shrink:0;" loading="lazy" />
+            <div>
+              <div style="font-size:0.83rem; font-weight:600;"><%= p.name %></div>
+              <div style="font-size:0.75rem; color:var(--muted);"><%= p.area %></div>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<%- include('partials/footer') %>
