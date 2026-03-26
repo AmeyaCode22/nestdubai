@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+
+<div class="success-page">
+  <div class="container">
+    <div class="success-card animate-up">
+      <div class="success-icon" role="img" aria-label="Success checkmark">✅</div>
+      <h1>Booking Confirmed!</h1>
+      <p>Welcome to NestDubai, <%= booking.student_name.split(' ')[0] %>! Your room has been successfully reserved. We're so excited to have you.</p>
+
+      <div class="success-details" aria-label="Booking details">
+        <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); font-weight:700; margin-bottom:4px;">Booking Reference</div>
+        <div style="font-size:1.2rem; font-weight:700; color:var(--teal); font-family:monospace; margin-bottom:12px;">#NEST-<%= String(booking.id).padStart(4,'0') %></div>
+
+        <% const details = [
+          { label:'Property', value: booking.property_name },
+          { label:'Location', value: booking.area },
+          { label:'Room Type', value: booking.room_label },
+          { label:'Move-in Date', value: new Date(booking.move_in_date).toLocaleDateString('en-AE',{day:'numeric',month:'long',year:'numeric'}) },
+          { label:'Duration', value: booking.duration_months + ' months' },
+          { label:'Monthly Rent', value: 'AED ' + (booking.price_monthly||0).toLocaleString() },
+          { label:'Total Paid Today', value: 'AED ' + (booking.price_monthly||0).toLocaleString() },
+          { label:'Payment Status', value: '✓ Confirmed & Paid' }
+        ] %>
+        <% details.forEach(d => { %>
+          <div class="success-detail-row">
+            <span class="success-detail-label"><%= d.label %></span>
+            <span class="success-detail-value" style="<%= d.label.includes('Paid') || d.label.includes('Status') ? 'color:var(--success)' : '' %>"><%= d.value %></span>
+          </div>
+        <% }) %>
+      </div>
+
+      <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+        <a href="/dashboard" class="btn btn-primary">Go to My Dashboard</a>
+        <a href="/properties" class="btn btn-outline">Browse More Rooms</a>
+      </div>
+
+      <div class="success-ref">
+        Our team will contact you at <strong><%= booking.student_email %></strong> within 24 hours with move-in instructions and key collection details.
+        <br>Questions? Email us at <a href="mailto:hello@nestdubai.com" style="color:var(--teal);">hello@nestdubai.com</a> or call <a href="tel:+97143000000" style="color:var(--teal);">+971 4 300 0000</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

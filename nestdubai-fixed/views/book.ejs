@@ -1,0 +1,175 @@
+<%- include('partials/header') %>
+
+<div style="background:var(--sand); min-height:100vh; padding-top:68px;">
+  <div class="container">
+    <div style="padding:32px 0 16px;">
+      <h1 style="font-size:1.8rem; margin-bottom:4px;">Book Your Room</h1>
+      <p class="text-muted">Choose your property, room type, and move-in date.</p>
+    </div>
+
+    <% if (error) { %>
+      <div class="alert alert-error" role="alert">⚠️ <%= error %></div>
+    <% } %>
+
+    <div class="booking-layout">
+      <!-- FORM -->
+      <div>
+        <form method="POST" action="/book" id="bookingForm">
+
+          <!-- Step 1: Property -->
+          <div style="background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:28px; margin-bottom:20px;">
+            <h3 style="font-size:1.1rem; margin-bottom:4px;">1. Choose Property</h3>
+            <p class="text-sm text-muted" style="margin-bottom:20px;">Select the location you'd like to live in.</p>
+
+            <div class="property-selector">
+              <% allProperties.forEach(p => { %>
+                <label class="prop-select-card <%= selectedRoom && property.id === p.id ? 'selected' : '' %>" for="prop_<%= p.id %>">
+                  <input type="radio" id="prop_<%= p.id %>" name="property_id" value="<%= p.id %>"
+                    <%= property.id === p.id ? 'checked' : '' %> required />
+                  <div style="width:100%; height:80px; border-radius:var(--radius-sm); overflow:hidden; margin-bottom:8px;">
+                    <img src="<%= p.image_hero %>" alt="<%= p.name %>" style="width:100%;height:100%;object-fit:cover;" loading="lazy" />
+                  </div>
+                  <div class="prop-select-name"><%= p.name %></div>
+                  <div class="prop-select-area">📍 <%= p.area %></div>
+                </label>
+              <% }) %>
+            </div>
+            <p class="form-hint">Changing property will update available room types. <a href="/properties" style="color:var(--teal);">Compare properties →</a></p>
+          </div>
+
+          <!-- Step 2: Room Type -->
+          <div style="background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:28px; margin-bottom:20px;">
+            <h3 style="font-size:1.1rem; margin-bottom:4px;">2. Choose Room Type</h3>
+            <p class="text-sm text-muted" style="margin-bottom:20px;">Select the type of room that fits your budget and lifestyle.</p>
+
+            <div class="room-type-selector">
+              <% roomTypes.forEach(rt => { %>
+                <label class="room-select-card <%= selectedRoom && selectedRoom.id === rt.id ? 'selected' : '' %>"
+                  for="room_<%= rt.id %>"
+                  data-price="<%= rt.price_monthly %>">
+                  <input type="radio" id="room_<%= rt.id %>" name="room_type_id" value="<%= rt.id %>"
+                    <%= selectedRoom && selectedRoom.id === rt.id ? 'checked' : '' %> required />
+                  <div>
+                    <div class="room-select-name">
+                      <%= rt.type === 'studio' ? '🏠' : rt.type === 'partition' ? '🚪' : '🛏' %> <%= rt.label %>
+                    </div>
+                    <div class="room-select-desc"><%= rt.description.substring(0, 90) %>…</div>
+                    <% if (rt.available <= 0) { %>
+                      <span class="badge badge-danger" style="margin-top:6px;">No Vacancies</span>
+                    <% } else if (rt.available <= 2) { %>
+                      <span class="badge badge-warning" style="margin-top:6px;">⚡ Only <%= rt.available %> left</span>
+                    <% } else { %>
+                      <span class="badge badge-success" style="margin-top:6px;"><%= rt.available %> available</span>
+                    <% } %>
+                  </div>
+                  <div>
+                    <div class="room-select-price">
+                      AED <%= rt.price_monthly.toLocaleString() %>
+                      <span>/month</span>
+                    </div>
+                    <% if (rt.available <= 0) { %>
+                      <div style="font-size:0.72rem; color:var(--danger); margin-top:4px; text-align:right;">Unavailable</div>
+                    <% } %>
+                  </div>
+                </label>
+              <% }) %>
+            </div>
+          </div>
+
+          <!-- Step 3: Dates -->
+          <div style="background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:28px; margin-bottom:20px;">
+            <h3 style="font-size:1.1rem; margin-bottom:4px;">3. Move-in Date & Duration</h3>
+            <p class="text-sm text-muted" style="margin-bottom:20px;">When do you want to move in, and how long do you plan to stay?</p>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="move_in_date">Move-in Date <span class="required">*</span></label>
+                <input class="form-control" type="date" id="move_in_date" name="move_in_date"
+                  min="<%= new Date().toISOString().split('T')[0] %>"
+                  required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="duration_months">Duration (Months)</label>
+                <select class="form-control" id="duration_months" name="duration_months">
+                  <option value="1">1 month</option>
+                  <option value="3">3 months</option>
+                  <option value="6" selected>6 months (popular)</option>
+                  <option value="9">9 months (academic year)</option>
+                  <option value="12">12 months (1 year)</option>
+                </select>
+              </div>
+            </div>
+            <p class="form-hint">💡 Longer stays often mean better value. Minimum stay is 1 month.</p>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-bottom:40px;">
+            Continue to Payment →
+          </button>
+        </form>
+      </div>
+
+      <!-- SUMMARY SIDEBAR -->
+      <aside>
+        <div class="booking-summary-card">
+          <div class="booking-summary-header">
+            <h3>📋 Booking Summary</h3>
+            <p style="font-size:0.78rem; color:rgba(255,255,255,0.7); margin-top:4px;">Updates as you select options</p>
+          </div>
+
+          <% if (property.image_hero) { %>
+            <div class="summary-img">
+              <img src="<%= property.image_hero %>" alt="<%= property.name %>" loading="lazy" />
+            </div>
+          <% } %>
+
+          <div class="booking-summary-body">
+            <div class="summary-line">
+              <span style="color:var(--muted);">Property</span>
+              <span style="font-weight:600; text-align:right; max-width:180px;"><%= property.name %></span>
+            </div>
+            <div class="summary-line">
+              <span style="color:var(--muted);">Room Type</span>
+              <span style="font-weight:600;" id="summary-room"><%= selectedRoom ? selectedRoom.label : 'Not selected' %></span>
+            </div>
+            <div class="summary-line">
+              <span style="color:var(--muted);">Monthly Rent</span>
+              <span style="font-weight:600; color:var(--teal);" id="summary-price">
+                AED <%= selectedRoom ? selectedRoom.price_monthly.toLocaleString() : '—' %>
+              </span>
+            </div>
+            <div class="summary-line">
+              <span style="color:var(--muted);">Duration</span>
+              <span id="summary-months">6 months</span>
+            </div>
+            <div style="height:1px; background:var(--sand-dark); margin:8px 0;"></div>
+            <div class="summary-line">
+              <span style="font-weight:700;" class="summary-total">Total</span>
+              <span id="summary-total" class="summary-total-val">
+                AED <%= selectedRoom ? (selectedRoom.price_monthly * 6).toLocaleString() : '—' %>
+              </span>
+            </div>
+
+            <div style="margin-top:16px; padding:12px; background:var(--sand); border-radius:var(--radius-md);">
+              <div style="font-size:0.78rem; color:var(--muted); display:flex; flex-direction:column; gap:6px;">
+                <span>🔒 Secure Stripe payment</span>
+                <span>📅 Monthly billing cycle</span>
+                <span>🏠 Room guaranteed upon payment</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Redirect to same page with new property on change
+  document.querySelectorAll('input[name="property_id"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      window.location.href = '/book?property=' + radio.value;
+    });
+  });
+</script>
+
+<%- include('partials/footer') %>

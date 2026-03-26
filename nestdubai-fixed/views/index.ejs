@@ -1,0 +1,252 @@
+<%- include('partials/header') %>
+
+<!-- ═══ HERO ══════════════════════════════════════════════════ -->
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="hero-pattern" aria-hidden="true"></div>
+  <div class="hero-pattern-2" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero-content animate-up">
+      <div class="hero-eyebrow">
+        <span class="live-dot" aria-hidden="true"></span>
+        Dubai's #1 Student Accommodation Platform
+      </div>
+      <h1 id="hero-heading">Find Your Home in<br><em>Dubai</em></h1>
+      <p>Affordable, safe, fully-furnished student rooms in the heart of Dubai. Choose from studios, private partitions, and bedspaces across 4 prime locations.</p>
+      <div class="hero-actions">
+        <a href="/properties" class="btn btn-gold btn-lg">Browse Rooms</a>
+        <a href="/register" class="btn btn-outline btn-lg" style="color:#fff;border-color:rgba(255,255,255,0.5);">Register Free</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-num">4</div>
+          <div class="hero-stat-label">Prime Locations</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">3</div>
+          <div class="hero-stat-label">Room Types</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">AED 700</div>
+          <div class="hero-stat-label">Starting from /mo</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">500+</div>
+          <div class="hero-stat-label">Happy Students</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ QUICK SEARCH ═══════════════════════════════════════════ -->
+<section style="background:var(--sand); padding:28px 0 48px;" aria-label="Quick search">
+  <div class="container">
+    <div class="search-bar-wrap">
+      <span style="padding-left:16px; font-size:1.1rem;" aria-hidden="true">🔍</span>
+      <select class="search-bar-select" id="searchArea" aria-label="Filter by area">
+        <option value="">All Areas</option>
+        <option value="Barsha Heights">Barsha Heights</option>
+        <option value="TECOM">TECOM</option>
+        <option value="Discovery Gardens">Discovery Gardens</option>
+        <option value="Al Barsha">Al Barsha</option>
+      </select>
+      <div class="search-bar-divider" aria-hidden="true"></div>
+      <select class="search-bar-select" id="searchType" aria-label="Filter by room type">
+        <option value="">Any Room Type</option>
+        <option value="studio">Studio</option>
+        <option value="partition">Private Partition</option>
+        <option value="bedspace">Bedspace</option>
+      </select>
+      <div class="search-bar-divider" aria-hidden="true"></div>
+      <button class="btn btn-primary" id="searchBtn" style="margin:4px;">Find Rooms</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHY NEST ═══════════════════════════════════════════════ -->
+<section class="section" style="background:var(--cream);" aria-labelledby="why-heading">
+  <div class="container">
+    <div class="text-center mb-48">
+      <h2 id="why-heading">Why Students Choose <span class="text-teal">NestDubai</span></h2>
+      <p style="max-width:520px; margin:12px auto 0;">Everything international students need — sorted before you land.</p>
+    </div>
+    <div class="why-grid">
+      <article class="why-card">
+        <div class="why-icon" aria-hidden="true">🔒</div>
+        <h4>Safe & Secure Living</h4>
+        <p>24/7 CCTV, smart card access, and on-site management at every property. Your safety is our first priority.</p>
+      </article>
+      <article class="why-card">
+        <div class="why-icon" aria-hidden="true">💳</div>
+        <h4>Simple Monthly Payments</h4>
+        <p>Pay securely online each month. No hidden fees, no deposits drama. Transparent pricing from day one.</p>
+      </article>
+      <article class="why-card">
+        <div class="why-icon" aria-hidden="true">📍</div>
+        <h4>Prime Dubai Locations</h4>
+        <p>All properties are within minutes of Dubai Metro stations, universities, supermarkets, and malls.</p>
+      </article>
+      <article class="why-card">
+        <div class="why-icon" aria-hidden="true">🌍</div>
+        <h4>International Community</h4>
+        <p>Live alongside students from 60+ countries. Community events, shared study spaces, and social lounges.</p>
+      </article>
+      <article class="why-card">
+        <div class="why-icon" aria-hidden="true">📶</div>
+        <h4>High-Speed Internet</h4>
+        <p>Gigabit fibre WiFi throughout all buildings. Stream, study, and video-call home without interruption.</p>
+      </article>
+      <article class="why-card">
+        <div class="why-icon" aria-hidden="true">🛁</div>
+        <h4>Fully Furnished</h4>
+        <p>Arrive with your suitcase. Bed, wardrobe, desk, kitchen, and bathroom — everything is ready for you.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROPERTIES PREVIEW ═══════════════════════════════════ -->
+<section class="section" style="background:var(--white);" aria-labelledby="props-heading">
+  <div class="container">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:36px; flex-wrap:wrap; gap:16px;">
+      <div>
+        <h2 id="props-heading">Our Properties</h2>
+        <p style="margin-top:8px;">4 hand-picked locations across Dubai's most student-friendly neighbourhoods.</p>
+      </div>
+      <a href="/properties" class="btn btn-outline">View All Properties →</a>
+    </div>
+    <div class="props-grid">
+      <% properties.forEach(prop => { %>
+        <article class="prop-card" data-area="<%= prop.area %>">
+          <div class="prop-card-img">
+            <img src="<%= prop.image_hero %>" alt="<%= prop.name %> — <%= prop.area %>" loading="lazy" />
+            <div class="prop-card-area-badge" aria-label="Location"><%= prop.area %></div>
+          </div>
+          <div class="prop-card-body">
+            <h3 class="prop-card-name"><%= prop.name %></h3>
+            <p class="prop-card-address">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <%= prop.address %>
+            </p>
+            <p class="prop-card-price">
+              From AED <%= prop.lowestPrice.toLocaleString() %>
+              <span>/ month</span>
+            </p>
+
+            <div class="prop-card-vacancy" data-live-vacancy>
+              <div class="prop-card-vacancy-label">
+                <span>Availability</span>
+                <span><%= prop.totalAvailable %> of <%= prop.totalCapacity %> spaces open</span>
+              </div>
+              <div class="vacancy-bar" data-pct="<%= prop.totalCapacity > 0 ? Math.round((prop.totalAvailable/prop.totalCapacity)*100) : 0 %>">
+                <div class="vacancy-fill"></div>
+              </div>
+            </div>
+
+            <div class="prop-card-footer">
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <% if (prop.roomTypes) { prop.roomTypes.forEach(rt => { %>
+                  <span class="badge badge-sand"><%= rt.type === 'studio' ? '🏠' : rt.type === 'partition' ? '🚪' : '🛏' %> <%= rt.label %></span>
+                <% }) } %>
+              </div>
+              <a href="/properties/<%= prop.id %>" class="btn btn-primary btn-sm">View →</a>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ROOM TYPES EXPLAINER ═══════════════════════════════════ -->
+<section class="section" style="background:linear-gradient(135deg,var(--teal-dark),var(--teal));" aria-labelledby="rooms-heading">
+  <div class="container">
+    <div class="text-center mb-48">
+      <h2 id="rooms-heading" style="color:#fff;">Three Room Types. One Budget.</h2>
+      <p style="color:rgba(255,255,255,0.75); max-width:500px; margin:12px auto 0;">Whether you want total privacy or a vibrant shared experience — we have the right option.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px;">
+
+      <article style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:var(--radius-lg); padding:32px; color:#fff; backdrop-filter:blur(8px);">
+        <div style="font-size:2.5rem; margin-bottom:16px;">🏠</div>
+        <h3 style="color:#fff; margin-bottom:8px;">Studio</h3>
+        <p style="color:rgba(255,255,255,0.75); margin-bottom:20px; font-size:0.875rem;">Your own self-contained apartment. Private kitchen, private bathroom, complete independence.</p>
+        <div style="font-size:1.4rem; font-weight:700; color:var(--gold-light);">From AED 3,100<span style="font-size:0.75rem;font-weight:400;color:rgba(255,255,255,0.6);"> /month</span></div>
+      </article>
+
+      <article style="background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.4); border-radius:var(--radius-lg); padding:32px; color:#fff; backdrop-filter:blur(8px); position:relative; transform:scale(1.04);">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%); background:var(--gold); color:#fff; padding:4px 16px; border-radius:999px; font-size:0.75rem; font-weight:700; white-space:nowrap;">MOST POPULAR</div>
+        <div style="font-size:2.5rem; margin-bottom:16px;">🚪</div>
+        <h3 style="color:#fff; margin-bottom:8px;">Private Partition</h3>
+        <p style="color:rgba(255,255,255,0.75); margin-bottom:20px; font-size:0.875rem;">Your own lockable room in a shared flat. 8 partitions per flat with shared kitchen & bathrooms.</p>
+        <div style="font-size:1.4rem; font-weight:700; color:var(--gold-light);">From AED 1,250<span style="font-size:0.75rem;font-weight:400;color:rgba(255,255,255,0.6);"> /month</span></div>
+      </article>
+
+      <article style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:var(--radius-lg); padding:32px; color:#fff; backdrop-filter:blur(8px);">
+        <div style="font-size:2.5rem; margin-bottom:16px;">🛏</div>
+        <h3 style="color:#fff; margin-bottom:8px;">Bedspace</h3>
+        <p style="color:rgba(255,255,255,0.75); margin-bottom:20px; font-size:0.875rem;">Shared living at its most affordable. 7 students per flat — 4 in hall, 3 in room. Social & budget-friendly.</p>
+        <div style="font-size:1.4rem; font-weight:700; color:var(--gold-light);">From AED 700<span style="font-size:0.75rem;font-weight:400;color:rgba(255,255,255,0.6);"> /month</span></div>
+      </article>
+
+    </div>
+    <div class="text-center" style="margin-top:36px;">
+      <a href="/properties" class="btn btn-gold btn-lg">See All Rooms & Prices</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═══════════════════════════════════════════ -->
+<section class="section" style="background:var(--sand);" aria-labelledby="testimonials-heading">
+  <div class="container">
+    <div class="text-center mb-48">
+      <h2 id="testimonials-heading">What Our Students Say</h2>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px;">
+      <% const testimonials = [
+        { name: 'Priya Sharma', uni: 'Middlesex University Dubai', room: 'Partition, Barsha Heights', text: 'Moving to Dubai was scary but NestDubai made it so easy. I had my room booked before I even landed! The Barsha Heights property is safe, clean, and the WiFi is amazing.', flag: '🇮🇳' },
+        { name: 'James Okonkwo', uni: 'American University in Dubai', room: 'Bedspace, TECOM Suites', text: 'Best value accommodation in Dubai, hands down. I\'ve made so many friends here and the location near Knowledge Village means I\'m at uni in under 10 minutes.', flag: '🇳🇬' },
+        { name: 'Fatima Al-Rashid', uni: 'BITS Pilani Dubai', room: 'Studio, Al Barsha', text: 'The studio is perfect for a focused student. Quiet, private, and Mall of Emirates is literally my neighbour. Worth every dirham. Booking online was super smooth.', flag: '🇵🇰' }
+      ] %>
+      <% testimonials.forEach(t => { %>
+        <article style="background:var(--white); border-radius:var(--radius-lg); padding:28px; border:1px solid var(--border);">
+          <div style="font-size:1.3rem; color:var(--gold); margin-bottom:12px;" aria-label="5 star rating">★★★★★</div>
+          <p style="font-size:0.875rem; line-height:1.7; margin-bottom:20px; font-style:italic;">"<%= t.text %>"</p>
+          <div style="display:flex; align-items:center; gap:10px; border-top:1px solid var(--sand-dark); padding-top:16px;">
+            <div style="width:38px;height:38px;background:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1rem;flex-shrink:0;"><%= t.name.charAt(0) %></div>
+            <div>
+              <div style="font-weight:600; font-size:0.875rem;"><%= t.flag %> <%= t.name %></div>
+              <div style="font-size:0.75rem; color:var(--muted);"><%= t.uni %></div>
+              <div style="font-size:0.72rem; color:var(--teal); font-weight:500;"><%= t.room %></div>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA BANNER ════════════════════════════════════════════ -->
+<section style="background:var(--charcoal); padding:80px 0;" aria-labelledby="cta-heading">
+  <div class="container text-center">
+    <h2 id="cta-heading" style="color:#fff; margin-bottom:16px;">Ready to Find Your Room?</h2>
+    <p style="color:rgba(255,255,255,0.65); max-width:480px; margin:0 auto 32px;">Join 500+ international students who call NestDubai home. Register free and book your room today.</p>
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <a href="/register" class="btn btn-gold btn-lg">Create Free Account</a>
+      <a href="/properties" class="btn btn-lg" style="background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);">Browse Properties</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.getElementById('searchBtn').addEventListener('click', () => {
+    const area = document.getElementById('searchArea').value;
+    const type = document.getElementById('searchType').value;
+    let url = '/properties?';
+    if (area) url += 'area=' + encodeURIComponent(area) + '&';
+    if (type) url += 'type=' + encodeURIComponent(type);
+    window.location.href = url;
+  });
+</script>
+
+<%- include('partials/footer') %>

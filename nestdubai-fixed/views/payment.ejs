@@ -1,0 +1,140 @@
+<%- include('partials/header') %>
+
+<div style="background:var(--sand); min-height:100vh; padding-top:68px;">
+  <div class="container">
+    <div style="padding:32px 0 16px;">
+      <a href="/dashboard" style="color:var(--muted); font-size:0.875rem; display:inline-flex; align-items:center; gap:5px; margin-bottom:12px;">← Back to Dashboard</a>
+      <h1 style="font-size:1.8rem; margin-bottom:4px;">Complete Your Payment</h1>
+      <p class="text-muted">Booking ref: <strong>#NEST-<%= String(booking.id).padStart(4,'0') %></strong></p>
+    </div>
+
+    <div class="payment-layout">
+      <!-- PAYMENT FORM -->
+      <div>
+        <div class="payment-card">
+          <h2>Payment Details</h2>
+          <p class="text-muted text-sm" style="margin-bottom:16px;">Your first month's rent is collected to confirm your booking.</p>
+
+          <div class="payment-secure-badge" role="status">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            256-bit SSL encrypted — Powered by Stripe
+          </div>
+
+          <% if (error) { %>
+            <div class="alert alert-error" role="alert">⚠️ <%= error %></div>
+          <% } %>
+
+          <!-- Demo notice when Stripe not configured -->
+          <% if (!stripeConfigured) { %>
+            <div class="demo-payment-notice" role="note">
+              <h4>🧪 Demo Mode — Test Payment</h4>
+              <p>Stripe is not yet configured. Click "Confirm & Pay" to simulate a successful payment and see the full booking confirmation flow.</p>
+            </div>
+          <% } %>
+
+          <form id="payment-form">
+            <!-- Only show card fields when Stripe is live -->
+            <% if (stripeConfigured) { %>
+              <div class="form-group">
+                <label class="form-label" for="card-element">Card Number</label>
+                <div id="card-element" class="card-field"></div>
+              </div>
+            <% } %>
+
+            <!-- Billing name -->
+            <div class="form-group">
+              <label class="form-label" for="billing-name">Name on Card</label>
+              <input class="form-control" type="text" id="billing-name"
+                placeholder="As it appears on your card"
+                value="<%= booking.student_name %>"
+                <%= !stripeConfigured ? 'disabled' : '' %> />
+            </div>
+
+            <div id="payment-status" style="display:none;"></div>
+
+            <button type="submit" id="submit-payment" class="btn btn-primary btn-block btn-lg" style="margin-top:8px;">
+              🔒 Confirm & Pay AED <%= (booking.price_monthly || 0).toLocaleString() %>
+            </button>
+
+            <p class="text-xs text-muted text-center" style="margin-top:12px;">
+              By completing payment you agree to our Terms of Service. First month's rent only — AED <%= (booking.price_monthly||0).toLocaleString() %>.
+            </p>
+          </form>
+        </div>
+
+        <!-- What happens next -->
+        <div style="background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; margin-top:16px;">
+          <h4 style="margin-bottom:16px;">What happens after payment?</h4>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <% const steps = [
+              { icon:'✅', text:'Your booking is instantly confirmed' },
+              { icon:'📧', text:'A confirmation summary is shown on screen' },
+              { icon:'📞', text:'Our team will contact you within 24 hours' },
+              { icon:'🏠', text:'Collect your keys on your move-in date' }
+            ] %>
+            <% steps.forEach((s, i) => { %>
+              <div style="display:flex; align-items:center; gap:12px; font-size:0.875rem; color:var(--slate);">
+                <div style="width:28px; height:28px; background:var(--sand); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:0.8rem;" aria-hidden="true"><%= s.icon %></div>
+                <span><%= s.text %></span>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUMMARY -->
+      <aside>
+        <div class="payment-summary-card">
+          <div class="payment-summary-img">
+            <img src="<%= booking.property_image || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80' %>" alt="<%= booking.property_name %>" loading="lazy" />
+          </div>
+          <div class="payment-summary-body">
+            <h3 style="font-size:1.1rem; margin-bottom:4px;"><%= booking.property_name %></h3>
+            <p style="font-size:0.82rem; color:var(--muted); margin-bottom:20px;">📍 <%= booking.area || '' %></p>
+
+            <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+              <% const lines = [
+                { label:'Room Type', val: booking.room_label },
+                { label:'Move-in Date', val: new Date(booking.move_in_date).toLocaleDateString('en-AE',{day:'numeric',month:'long',year:'numeric'}) },
+                { label:'Duration', val: booking.duration_months + ' months' },
+                { label:'Monthly Rent', val: 'AED ' + (booking.price_monthly||0).toLocaleString() },
+                { label:'Total Contract', val: 'AED ' + (booking.total_amount||0).toLocaleString() }
+              ] %>
+              <% lines.forEach(l => { %>
+                <div style="display:flex; justify-content:space-between; font-size:0.875rem; padding-bottom:8px; border-bottom:1px solid var(--sand-dark);">
+                  <span style="color:var(--muted);"><%= l.label %></span>
+                  <span style="font-weight:600; text-align:right; max-width:180px;"><%= l.val %></span>
+                </div>
+              <% }) %>
+            </div>
+
+            <div style="background:var(--sand); border-radius:var(--radius-md); padding:14px; margin-bottom:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-weight:700; font-size:0.9rem;">Due Today</span>
+                <span style="font-size:1.3rem; font-weight:700; color:var(--teal);">AED <%= (booking.price_monthly||0).toLocaleString() %></span>
+              </div>
+              <p style="font-size:0.75rem; color:var(--muted); margin-top:4px;">First month's rent only</p>
+            </div>
+
+            <div style="font-size:0.78rem; color:var(--muted); display:flex; flex-direction:column; gap:6px;">
+              <span>🔒 Payment secured by Stripe</span>
+              <span>📋 Booking ref: #NEST-<%= String(booking.id).padStart(4,'0') %></span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<% if (stripeConfigured && stripePublishableKey) { %>
+  <script src="https://js.stripe.com/v3/"></script>
+<% } %>
+<script>
+  window.BOOKING_ID = <%= booking.id %>;
+  window.STRIPE_KEY = '<%= stripePublishableKey || "" %>';
+  window.DEMO_MODE = <%= !stripeConfigured %>;
+</script>
+<script src="/js/payment.js"></script>
+
+<%- include('partials/footer') %>
