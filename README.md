@@ -2,8 +2,6 @@
 
 A full-stack web application for student accommodation booking in Dubai. Built with Node.js, Express, EJS, and SQLite.
 
-**Live URL:** [Deploy to Railway — see instructions below]
-
 ---
 
 ## Tech Stack
@@ -103,17 +101,6 @@ nestdubai/
 └── middleware/         # Auth checks
 ```
 
----
 
-## Deploy to Railway (Live URL)
-
-1. Push code to GitHub
-2. Go to https://railway.app → New Project → Deploy from GitHub
-3. Select your `nestdubai` repo
-4. Add environment variables in Railway dashboard
-5. Railway gives you a public URL automatically
-
----
-
-## Module: CTEC2712D Web Application Development
+ation Development
 **Assignment:** Web Project — 4 video demonstrations
