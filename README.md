@@ -100,5 +100,3 @@ nestdubai/
 ├── public/             # CSS, JS, images
 └── middleware/         # Auth checks
 ```
-ation Development
-**Assignment:** Web Project — 4 video demonstrations
